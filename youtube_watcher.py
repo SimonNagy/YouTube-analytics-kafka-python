@@ -59,6 +59,17 @@ def fetch_videos(google_api_key, youtube_playlist_id, page_token=None):
     if next_page_token is not None:
         yield from fetch_videos(google_api_key, youtube_playlist_id, next_page_token)
 
+def summarize_video(video):
+    
+    return {
+        "video_id": video["id"],
+        "title": video["snippet"]["title"],
+        # .get() <= not everything has a count associated
+        "views": video["statistics"].get("viewCount"),
+        "likes": video["statistics"].get("likeCount"),
+        "comments": video["statistics"].get("commentCount"),
+    }
+
 
 def main():
     logging.info("START")
@@ -69,7 +80,7 @@ def main():
     for video_item in fetch_playlist_items(google_api_key, youtube_playlist_id):
         video_id = video_item["contentDetails"]["videoId"]
         for video in fetch_videos(google_api_key, video_id):
-            logging.info("GOT %s", pformat(video))
+            logging.info("GOT %s", pformat(summarize_video(video)))
 
 
 if __name__ == "__main__":
