@@ -64,10 +64,10 @@ def summarize_video(video):
     return {
         "video_id": video["id"],
         "title": video["snippet"]["title"],
-        # .get() <= not everything has a count associated
-        "views": video["statistics"].get("viewCount"),
-        "likes": video["statistics"].get("likeCount"),
-        "comments": video["statistics"].get("commentCount"),
+        # .get() <= not everything has a count associated; default == 0
+        "views": int(video["statistics"].get("viewCount",0)),
+        "likes": int(video["statistics"].get("likeCount",0)),
+        "comments": int(video["statistics"].get("commentCount",0)),
     }
 
 
