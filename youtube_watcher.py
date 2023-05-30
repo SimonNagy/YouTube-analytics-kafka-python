@@ -22,10 +22,9 @@ def main():
         if "items" in data:
             items = data["items"]
             for item in items:
-                video_id = item["contentDetails"]
-                video_title = item["contentDetails"]
+                content_details = item["contentDetails"]
                 etag = item["etag"]
-                logging.debug("Video ID: %s, Video Title: %s, Etag: %s", video_id, video_title, etag)
+                logging.debug("Content Details: %s, Etag: %s", content_details, etag)
 
         # Include page info section
         if "pageInfo" in data:
