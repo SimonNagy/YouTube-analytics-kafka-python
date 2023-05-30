@@ -1,13 +1,13 @@
 import logging
 import sys
-from confluent_kafka import SerializingProducer, serialization
 import requests
 from config import config
 import json
 from pprint import pformat
-from confluent_kafka.avro import AvroSerializer
 from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.serialization import StringSerializer
+from confluent_kafka.schema_registry.avro import AvroSerializer
+from confluent_kafka import SerializingProducer
 
 def fetch_playlist_items_page(google_api_key, youtube_playlist_id, page_token=None):
     response = requests.get("https://www.googleapis.com/youtube/v3/playlistItems",
@@ -207,9 +207,15 @@ def main():
             producer.produce(
                 topic = 'youtube_videos', # topic in the kafka ksql cluster
                 key = video_id,
-                value = value,
-                on_delivery = ondelivery
+                value = {
+                        "TITLE": video["snippet"]["title"],
+                        "VIEWS": int(video["statistics"].get("viewCount",0)),
+                        "LIKES": int(video["statistics"].get("likeCount",0)),
+                        "COMMENTS": int(video["statistics"].get("commentCount",0))
+                },
+                on_delivery = on_delivery
             )
+    producer.flush()
 
 
 if __name__ == "__main__":
