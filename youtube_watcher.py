@@ -1,5 +1,6 @@
 import logging
 import sys
+from confluent_kafka import SerializingProducer
 import requests
 from config import config
 import json
@@ -70,9 +71,18 @@ def summarize_video(video):
         "comments": int(video["statistics"].get("commentCount",0)),
     }
 
+def on_delivery(err, record):
+    pass
+
+
+
 
 def main():
     logging.info("START")
+
+    # encoding the data as binary and ship it up to the kafka cluster
+    kafka_config = config("kafka")
+    producer = SerializingProducer(kafka_config)
 
     google_api_key = config["google_api_key"]
     youtube_playlist_id = config["youtube_playlist_id"]
@@ -81,6 +91,13 @@ def main():
         video_id = video_item["contentDetails"]["videoId"]
         for video in fetch_videos(google_api_key, video_id):
             logging.info("GOT %s", pformat(summarize_video(video)))
+
+            producer.produce(
+                topic = 'youtube_videos', # topic in the kafka ksql cluster
+                key = video_id,
+                value = value,
+                on_delivery = ondelivery
+            )
 
 
 if __name__ == "__main__":
