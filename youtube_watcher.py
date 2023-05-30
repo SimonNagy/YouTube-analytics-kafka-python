@@ -13,7 +13,7 @@ def main():
     response = requests.get("https://www.googleapis.com/youtube/v3/playlistItems", params={
         "key": google_api_key,
         "playlistId": youtube_playlist_id,
-        "part": "snippet",
+        "part": "contentDetails",
         "maxResults": 50  # Maximum number of results per page (adjust as needed)
     })
 
@@ -22,8 +22,8 @@ def main():
         if "items" in data:
             items = data["items"]
             for item in items:
-                video_id = item["snippet"]["resourceId"]["videoId"]
-                video_title = item["snippet"]["title"]
+                video_id = item["contentDetails"]
+                video_title = item["contentDetails"]
                 etag = item["etag"]
                 logging.debug("Video ID: %s, Video Title: %s, Etag: %s", video_id, video_title, etag)
 
