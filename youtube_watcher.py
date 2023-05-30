@@ -186,11 +186,13 @@ def main():
     logging.info("START")
 
     schema_registry_client = SchemaRegistryClient(config["schema_registry"])
-
+    youtube_videos_value_schema = schema_registry_client.get_latest_version("youtube_videos_value")
     # encoding the data as binary and ship it up to the kafka cluster
     kafka_config = config["kafka"] | {
         "key.serializer": StringSerializer(),
-        "value.serializer": AvroSerializer(schema_registry_client, schema_str),
+        "value.serializer": AvroSerializer(schema_registry_client, 
+                                           youtube_videos_value_schema.schema.schema_str,
+        ),
     }
     producer = SerializingProducer(kafka_config)
 
