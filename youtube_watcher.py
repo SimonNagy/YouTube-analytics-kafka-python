@@ -26,8 +26,15 @@ def main():
                 video_title = item["snippet"]["title"]
                 etag = item["etag"]
                 logging.debug("Video ID: %s, Video Title: %s, Etag: %s", video_id, video_title, etag)
+
+        # Include page info section
+        if "pageInfo" in data:
+            page_info = data["pageInfo"]
+            total_results = page_info["totalResults"]
+            results_per_page = page_info["resultsPerPage"]
+            logging.debug("Total Results: %d, Results Per Page: %d", total_results, results_per_page)
         else:
-            logging.error("Items key not found in response data: %s", data)
+            logging.error("Page info not found in response data: %s", data)
     else:
         logging.error("Request failed with status code: %d", response.status_code)
 
