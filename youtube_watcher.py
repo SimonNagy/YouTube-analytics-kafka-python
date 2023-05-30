@@ -23,10 +23,11 @@ def main():
             items = data["items"]
             for item in items:
                 kind = item["kind"]
+                item_id = item["id"]
                 content_details = item["contentDetails"]
                 etag = item["etag"]
-                logging.debug("Kind: %s,Content Details: %s, Etag: %s",
-                               kind, content_details, etag)
+                logging.debug("Kind: %s, ID: %s Content Details: %s, Etag: %s",
+                               kind, item_id, content_details, etag)
 
         # Include page info section
         if "pageInfo" in data:
