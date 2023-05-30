@@ -24,7 +24,8 @@ def main():
             for item in items:
                 video_id = item["snippet"]["resourceId"]["videoId"]
                 video_title = item["snippet"]["title"]
-                logging.debug("Video ID: %s, Video Title: %s", video_id, video_title)
+                etag = item["etag"]
+                logging.debug("Video ID: %s, Video Title: %s, Etag: %s", video_id, video_title, etag)
         else:
             logging.error("Items key not found in response data: %s", data)
     else:
