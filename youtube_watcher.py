@@ -65,7 +65,11 @@ def main():
 
     google_api_key = config["google_api_key"]
     youtube_playlist_id = config["youtube_playlist_id"]
-    fetch_playlist_items_page(google_api_key, youtube_playlist_id)
+
+    for video_item in fetch_playlist_items(google_api_key, youtube_playlist_id):
+        video_id = video_item["contentDetails"]["videoId"]
+        for video in fetch_videos(google_api_key, video_id):
+            logging.info("GOT %s", pformat(video))
 
 
 if __name__ == "__main__":
