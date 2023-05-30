@@ -1,6 +1,6 @@
 import logging
 import sys
-from confluent_kafka import SerializingProducer
+from confluent_kafka import SerializingProducer, serialization
 import requests
 from config import config
 import json
@@ -80,8 +80,13 @@ def on_delivery(err, record):
 def main():
     logging.info("START")
 
+    schema_registry_client = SchemaRegistryClient(config["schema_registry"])
+
     # encoding the data as binary and ship it up to the kafka cluster
-    kafka_config = config("kafka")
+    kafka_config = config["kafka"] | {
+        "key.serializer": StringSerializer(),
+        "value.serializer": AvroSerializer(schema_registry_client, schema_str),
+    }
     producer = SerializingProducer(kafka_config)
 
     google_api_key = config["google_api_key"]
