@@ -8,3 +8,5 @@ KSQL database
 
 confluent_kafka
 fastavro
+
+detect changes in real time -- emit changes + track if previous and current likes are equal
