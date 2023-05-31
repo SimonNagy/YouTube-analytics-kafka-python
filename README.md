@@ -57,12 +57,17 @@ The changed records are displayed as the result of this query. By running this q
 
 ## Telegram
 
-I 
+The aim of this step is to create a Telegram bot to notify the user, when changes occur in the paramters of the video(s) in the playlist. 
 
-creating a telegram bot to manage notifications, when there are changes in the paramteres
-- creating the bot
-- pinging the bot, then fetching chatid with curl
-- creating the outbox stream to handle messages to telegram (confluent)
+First, I've created a Telegram bot, and collected the ID of the bot. Then I've pinged my bot in order to generate traffic, so I can check the chatId using curl.
+
+![](.\docs\05_telegram_chat_fetchid_jq.png)
+
+Using the chatID, I've created an outbox stream to handle messages from Confluent cloud to the Telegram bot.
+
+![](.\docs/06_setting_up_telegram_outbox_stream.png)
+
+The outbox stream has two attributes: `chat_id`, and `text` that I would like to transfer. It is stored in its dedicated `KAFKA_TOPIC`.
 
 ## Connector -- data integration
 - HTTP sink connector in confluent
