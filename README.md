@@ -26,3 +26,16 @@ detect changes in real time -- emit changes + track if previous and current like
 
 ## Telegram
 creating a telegram bot to manage notifications, when there are changes in the paramteres
+- creating the bot
+- pinging the bot, then fetching chatid with curl
+- creating the outbox stream to handle messages to telegram (confluent)
+
+## Connector -- data integration
+- HTTP sink connector in confluent
+    - https://api.telegram.org/bot<token>/sendMessage
+    - input record value format == avro
+    - request method: POST
+    - https header == content-type: application/json
+    - request body format == json
+insert the png here
+
