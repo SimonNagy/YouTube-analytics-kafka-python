@@ -1,4 +1,4 @@
-# Youtube Analytics with Kafka-python
+# Youtube Analytics with Confluent_kafka
 
 In this project, I've built a program, which utilizes the confluent_kafka python libary in order to collect and stream data to a Confluent Kafka cluster ksql database, and notify the user on Telegram, when a video gets liked. 
 
@@ -39,17 +39,26 @@ The correct establishment of the table, and the stream can be checked by selecti
 
 ![](.\docs/02_select_emit_changes.png)
 
-select-emit-changes -- emit changes from the youtube videos table
-
 ### Creating the comparison table
 
-creating last-previous table to compare changes in likes/comments etc.
+The next step was to create a comparison table, so that changes on YouTube can be detected. There are three attributes, which can be tracked: likes, comments, and views. For this purpose, I've created the `youtube_changes` table, in the `KAFKA_TOPIC` of youtube_changes. 
+
+![](.\docs/03_create_latest_previous_table.png)
+
+This table contains the number of views, likes and comments, before and after a refresh. This is selected by using the `latest_by_offset` function, and checking the first and second index value of the attributes.
 
 ### Detecting changes in real time
 
-detect changes in real time -- emit changes + track if previous and current likes are equal
+Using the previously created table, I've set up a stream, which can detect changes in the latest and previous values. First of all, the successful definition and operation of this table can be checked, as
+
+![](.\docs/04_message_change_tracking.png)
+
+The changed records are displayed as the result of this query. By running this query as `EMIT CHANGES` we can detect chaged real time, by tracking if the previous values and the last values are equal.
 
 ## Telegram
+
+I 
+
 creating a telegram bot to manage notifications, when there are changes in the paramteres
 - creating the bot
 - pinging the bot, then fetching chatid with curl
@@ -67,4 +76,10 @@ insert the png here
 ## Final pipeline to connect youtube analytics and telegram
 - creating the youtube changes stream
 - final task: breach the gap between the telegram stream and the youtube changes stream
+
+The next step is to create the stream, which is capable of handling the change records, and can be used in the next steps to forward the changes as messages.
+
+![](.\docs/05_create_ksql_stream_youtubechanges.png)
+
+
 - writing the query to forward from kafka to telegram (PNG)
