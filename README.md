@@ -25,11 +25,19 @@ This file contains 6 functions, as
 
 ## Confluent 
 
-### Creating the table
-create ksql stream for youtube videos
+In the next step, a full configuration of Confluent cloud is needed. First of all, I've created a new environemnt, and a Kafka cluster in that environment. Further steps are done in the Kafka cluster.
 
-confluent_kafka
-fastavro
+### Creating a table and a ksql stream for YouTube Analytics
+
+First, I've created a ksql table to store the data fetched from YouTube. This table contains the following attributes: video_id (varchar, key), title (varchar), comments (int), views (int), likes (int)
+
+Next, I've created a stream, so I can send data into ksql. In the stream, the `KAFKA_TOPIC` youtube_videos is defined, and the `value_format` is avro.
+
+![](.\docs/01_create_ksql_stream.png)
+
+The correct establishment of the table, and the stream can be checked by selecting everything, and emitting changes, which results in an infinitely running query.
+
+![](.\docs/02_select_emit_changes.png)
 
 select-emit-changes -- emit changes from the youtube videos table
 
@@ -49,7 +57,7 @@ creating a telegram bot to manage notifications, when there are changes in the p
 
 ## Connector -- data integration
 - HTTP sink connector in confluent
-    - https://api.telegram.org/bot<token>/sendMessage
+    - `https://api.telegram.org/bot<token>/sendMessage`
     - input record value format == avro
     - request method: POST
     - https header == content-type: application/json
