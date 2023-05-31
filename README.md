@@ -39,3 +39,7 @@ creating a telegram bot to manage notifications, when there are changes in the p
     - request body format == json
 insert the png here
 
+## Final pipeline to connect youtube analytics and telegram
+- creating the youtube changes stream
+- final task: breach the gap between the telegram stream and the youtube changes stream
+- writing the query to forward from kafka to telegram (PNG)
