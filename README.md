@@ -70,21 +70,25 @@ Using the chatID, I've created an outbox stream to handle messages from Confluen
 The outbox stream has two attributes: `chat_id`, and `text` that I would like to transfer. It is stored in its dedicated `KAFKA_TOPIC`.
 
 ## Connector -- data integration
-- HTTP sink connector in confluent
-    - `https://api.telegram.org/bot<token>/sendMessage`
-    - input record value format == avro
-    - request method: POST
-    - https header == content-type: application/json
-    - request body format == json
-insert the png here
 
-## Final pipeline to connect youtube analytics and telegram
-- creating the youtube changes stream
-- final task: breach the gap between the telegram stream and the youtube changes stream
+In order to utilize the outbox stream, I've made an HTTP sink connector on Confluent. It is configured as a POST request, with `content-type: application/json`.
 
-The next step is to create the stream, which is capable of handling the change records, and can be used in the next steps to forward the changes as messages.
+![](docs/07_telegram_connector_config.png)
 
-![](.\docs/05_create_ksql_stream_youtubechanges.png)
+## The final pipeline to connect YouTube Analytics and Telegram API
 
+First, I've created a stream to handle youtube changes. This is capable of sending the data in `youtube_changes_stream`.
 
-- writing the query to forward from kafka to telegram (PNG)
+![](docs/0X_create_ksql_stream_youtubechanges.png)
+
+The final task was to breach the gap between the telegram stream and the youtube changes stream. For this I've declared a query, which inserts from the youtube changes to the telegram changes. 
+
+![](.\docs/inserting_from_ksql_to_telegram_likes_changed.png)
+
+This inserts into the `telegram_outbox`, using the `chat_id`, and forwards a simple message containing previous and current likes, which are fetched from the `YOUTUBE_CHANGES_STREAM`. This query is triggered when previous and currents likes are not equal.
+
+# Result
+
+The final result of this software is a simple notification appearing in telegram, when someone like a video on the playlist, which is monitored.
+
+![](.\docs/notification.png)
